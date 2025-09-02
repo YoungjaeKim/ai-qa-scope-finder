@@ -12,9 +12,22 @@ BlackBox QA를 할 때, 사양서와 실제 코드 변경사항의 차이를 분
 2. Repository - GitHub Repo
 3. QA Test Case - QA가 작성한 테스트케이스
 
-## How it works
-1. GitHub Changes
-2. Test Case Changes
+## Architecture
 
-구체적인 사양의 링크는 QA Test Case의 링크로 제공되어도 되며, AI 관점에서는 구체적인 내용은 몰라도 된다. 
+The repository includes a React + TypeScript frontend (`client`) and an Express + MongoDB backend (`server`).
+Test cases are uploaded as CSV files where each line describes a test case identifier followed by step descriptions.
+The backend reads git diffs from a repository, sends them together with the test cases to the ChatGPT API, and returns only impacted test cases.
+
+### Environment
+
+Create a `.env` file based on `.env.example` and supply values for `OPENAI_API_KEY` and `MONGODB_URI`.
+
+### Development
+
+```bash
+# start backend
+npm --prefix server run dev
+# start frontend
+npm --prefix client run dev
+```
 
