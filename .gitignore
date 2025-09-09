@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 client/node_modules
 server/node_modules
 server/uploads
+
+# IDEs and editors
+.idea
