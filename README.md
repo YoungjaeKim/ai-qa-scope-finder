@@ -31,3 +31,27 @@ npm --prefix server run dev
 npm --prefix client run dev
 ```
 
+## CSV Format
+
+The test cases should be uploaded as a CSV file where each row represents a test case. The format is:
+
+```
+<test_case_id>,<step1>,<step2>,<step3>,...
+```
+
+### Example CSV File
+
+```csv
+TC001,Login to application,Navigate to dashboard,Verify user profile
+TC002,Open settings page,Change password,Save changes,Logout
+TC003,Create new project,Add project details,Upload files,Submit project
+TC004,Search for existing project,Filter by date,Export results
+TC005,Login as admin,Access user management,Delete inactive users,Generate report
+```
+
+Each line contains:
+- **Test Case ID**: Unique identifier for the test case (first column)
+- **Steps**: Comma-separated list of test steps describing the test scenario (remaining columns)
+
+The system will analyze git diffs and determine which test cases are potentially affected by code changes.
+
