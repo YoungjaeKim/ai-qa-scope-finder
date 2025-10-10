@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { StepCase } from '../models/Project';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.AI_API_KEY });
 
 function buildPrompt(diff: string, cases: StepCase[]): string {
   const caseText = cases
@@ -23,6 +23,7 @@ export async function analyzeRepo(repoUrl: string, cases: StepCase[]): Promise<S
   const diff = await simpleGit(tmp).diff();
   const prompt = buildPrompt(diff, cases);
 
+  // send request to openai
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }]

@@ -11,6 +11,7 @@ BlackBox QA를 할 때, 사양서와 실제 코드 변경사항의 차이를 분
 1. Specification Snapshot - 사양서가 시간별로 누적된다.
 2. Repository - GitHub Repo
 3. QA Test Case - QA가 작성한 테스트케이스
+4. OpenAI or Claude API Key
 
 ## Architecture
 
@@ -18,9 +19,9 @@ The repository includes a React + TypeScript frontend (`client`) and an Express 
 Test cases are uploaded as CSV files where each line describes a test case identifier followed by step descriptions.
 The backend reads git diffs from a repository, sends them together with the test cases to the ChatGPT API, and returns only impacted test cases.
 
-### Environment
+### Environment Setup
 
-Create a `.env` file based on `.env.example` and supply values for `OPENAI_API_KEY` and `MONGODB_URI`.
+Copy [.env.example](.env.example) file to [/server](./server/) as `.env` file and supply values.
 
 ### Development
 
