@@ -11,7 +11,7 @@ const openai = new OpenAI({ apiKey: process.env.AI_API_KEY });
 
 function buildPrompt(diff: string, cases: StepCase[]): string {
   const caseText = cases
-    .map(c => `${c.caseId}: ${c.steps.join(' -> ')}`)
+    .map(c => `${c.caseId} (${c.title}): ${c.steps.join(' -> ')}`)
     .join('\n');
   return `Given the following git diff:\n${diff}\n\nAnd test cases:\n${caseText}\n\nReturn a JSON array of test case IDs that are affected.`;
 }

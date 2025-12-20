@@ -2,6 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface StepCase {
   caseId: string;
+  title: string;
   steps: string[];
 }
 
@@ -13,6 +14,7 @@ export interface ProjectDoc extends Document {
 
 const StepSchema = new Schema<StepCase>({
   caseId: { type: String, required: true },
+  title: { type: String, required: true },
   steps: { type: [String], required: true }
 });
 

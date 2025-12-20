@@ -9,8 +9,8 @@ export async function parseCsv(filePath: string): Promise<StepCase[]> {
       .pipe(parse({ delimiter: ',', trim: true }))
       .on('data', (row: string[]) => {
         if (!row.length) return;
-        const [caseId, ...steps] = row;
-        cases.push({ caseId, steps });
+        const [caseId, title, ...steps] = row;
+        cases.push({ caseId, title: title || '', steps });
       })
       .on('end', () => resolve(cases))
       .on('error', reject);

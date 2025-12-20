@@ -144,3 +144,5 @@ server/uploads
 
 # IDEs and editors
 .idea
+
+/data
