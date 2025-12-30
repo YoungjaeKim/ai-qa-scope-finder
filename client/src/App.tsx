@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Autocomplete, List, ListItem, Typography, Alert, CircularProgress, Paper, Divider } from '@mui/material';
+import { Box, Button, TextField, Autocomplete, List, ListItem, Typography, Alert, CircularProgress, Paper, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Project, StepCase } from './types';
 import { getProjects, createProject, analyze } from './api';
 
@@ -11,6 +11,10 @@ const App: React.FC = () => {
   const [selectedCase, setSelectedCase] = useState<StepCase | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [projectName, setProjectName] = useState('');
+  const [repoUrl, setRepoUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -53,6 +57,42 @@ const App: React.FC = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setDialogOpen(true);
+    }
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setProjectName('');
+    setRepoUrl('');
+    setSelectedFile(null);
+  };
+
+  const handleCreateProject = async () => {
+    if (!selectedFile) return;
+    const name = projectName || 'New Project';
+    setLoading(true);
+    setDialogOpen(false);
+    try {
+      const project = await createProject(name, repoUrl, selectedFile);
+      setProjects(prev => [...(prev || []), project]);
+      setSelected(project);
+      setError(null);
+      setProjectName('');
+      setRepoUrl('');
+      setSelectedFile(null);
+    } catch (err) {
+      console.error('Failed to create project:', err);
+      setError('Failed to create project');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box p={2}>
       {error && (
@@ -80,24 +120,7 @@ const App: React.FC = () => {
             hidden
             type="file"
             accept=".csv"
-            onChange={async e => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              const name = prompt('Project name?') || 'New Project';
-              const repoUrl = prompt('Repo URL?') || '';
-              setLoading(true);
-              try {
-                const project = await createProject(name, repoUrl, file);
-                setProjects(prev => [...(prev || []), project]);
-                setSelected(project);
-                setError(null);
-              } catch (err) {
-                console.error('Failed to create project:', err);
-                setError('Failed to create project');
-              } finally {
-                setLoading(false);
-              }
-            }}
+            onChange={handleFileSelect}
           />
         </Button>
         <TextField
@@ -173,6 +196,35 @@ const App: React.FC = () => {
           )}
         </Paper>
       </Box>
+
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Create New Project</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 400, pt: 1 }}>
+            <TextField
+              label="Project Name"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              placeholder="New Project"
+              fullWidth
+              autoFocus
+            />
+            <TextField
+              label="Repository URL"
+              value={repoUrl}
+              onChange={(e) => setRepoUrl(e.target.value)}
+              placeholder="https://github.com/..."
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleCreateProject} variant="contained" disabled={!selectedFile}>
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

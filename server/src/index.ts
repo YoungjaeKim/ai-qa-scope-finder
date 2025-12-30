@@ -14,6 +14,10 @@ console.log('MONGODB_URI:', process.env.MONGODB_URI);
 
 mongoose.connect(process.env.MONGODB_URI || '');
 
+app.get('/', (_req, res) => {
+  res.json({ timestamp: new Date().toISOString() });
+});
+
 app.use('/projects', projectsRouter);
 
 const port = process.env.PORT || 4000;
